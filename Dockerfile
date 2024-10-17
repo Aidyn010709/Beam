@@ -35,6 +35,6 @@ RUN poetry install
 
 COPY . .
 
-# RUN chmod 755 /app/entrypoints/* && \
-#         chmod +x /app/entrypoints/* && \
-#             export DJANGO_SETTINGS_MODULE=beam.settings.base
+RUN chmod 755 /app/entrypoints/* && \
+        chmod +x /app/entrypoints/* && \
+            export DJANGO_SETTINGS_MODULE=beam.settings.base
