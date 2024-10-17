@@ -6,18 +6,16 @@ ENV PIP_NO_CACHE_DIR=off \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR="/var/cache/pypoetry"
 
-RUN apt-get update -y &&  \
-    apt-get upgrade -y &&  \
-    apt-get install -y  \
-        --no-install-recommends  \
-        bash \
-        binutils  \
-        libproj-dev  \
-        gdal-bin  \
-        libgdal-dev  \
-        python3-gdal  \
-        python3-pip  \
-        build-essential
+RUN apt-get update -y && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    bash \
+    binutils \
+    libproj-dev \
+    gdal-bin \
+    libgdal-dev \
+    python3-gdal \
+    python3-pip \
+    build-essential || true
 
 RUN pip install --upgrade pip
 RUN pip install poetry
