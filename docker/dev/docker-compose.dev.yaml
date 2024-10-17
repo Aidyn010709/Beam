@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ../../:/app
+      - ../../nginx/dev:/etc/nginx/conf.d
+      - ../../nginx/dev/beam_post_dev_nginx.conf:/etc/nginx/beam_post_dev_nginx.conf
+      - /etc/ssl:/etc/ssl
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - nginx_network
+
+  web: &web
+    container_name: beam_dev_web
+    restart: always
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../:/app
+    env_file:
+      - ../../.env
+    command: "sh /app/entrypoints/wsgi_server.sh"
+    networks:
+      - postgres_network
+      - redis_network
+      - celery_network
+      - nginx_network
+
+  celery:
+    <<: *web
+    container_name: beam_dev_worker
+    ports: []
+    command: celery -A beam worker --loglevel=INFO
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    ports:
+      - "6379:6379"
+    networks:
+      - redis_network
+      - celery_network
+
+networks:
+  nginx_network:
+    driver: bridge
+  postgres_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+  celery_network:
+    driver: bridge
