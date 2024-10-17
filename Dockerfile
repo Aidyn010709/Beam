@@ -37,4 +37,4 @@ COPY . .
 
 RUN chmod 755 /app/entrypoints/* && \
         chmod +x /app/entrypoints/* && \
-            export DJANGO_SETTINGS_MODULE=beam.settings.base
+            export DJANGO_SETTINGS_MODULE=boomerang_post.settings
